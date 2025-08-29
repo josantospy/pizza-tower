@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PizzaShop - Sistema de Pedidos</title>
+    <title>PizzaShop - Sistema Completo</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
             --primary: #E31837;
@@ -74,6 +75,11 @@
             color: var(--accent);
         }
         
+        nav a.active {
+            color: var(--accent);
+            border-bottom: 2px solid var(--accent);
+        }
+        
         .cart-icon {
             position: relative;
             cursor: pointer;
@@ -99,6 +105,7 @@
             max-width: 1200px;
             margin: 2rem auto;
             padding: 0 1rem;
+            min-height: 60vh;
         }
         
         .section-title {
@@ -120,13 +127,13 @@
             background-color: var(--accent);
         }
         
-        .pizza-grid {
+        .pizza-grid, .offers-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
             gap: 2rem;
         }
         
-        .pizza-card {
+        .pizza-card, .offer-card {
             background: white;
             border-radius: 10px;
             overflow: hidden;
@@ -134,39 +141,46 @@
             transition: transform 0.3s, box-shadow 0.3s;
         }
         
-        .pizza-card:hover {
+        .pizza-card:hover, .offer-card:hover {
             transform: translateY(-5px);
             box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
         }
         
-        .pizza-image {
+        .pizza-image, .offer-image {
             height: 180px;
             background-color: #ddd;
             background-size: cover;
             background-position: center;
         }
         
-        .pizza-info {
+        .pizza-info, .offer-info {
             padding: 1.5rem;
         }
         
-        .pizza-title {
+        .pizza-title, .offer-title {
             font-size: 1.2rem;
             margin-bottom: 0.5rem;
             color: var(--secondary);
         }
         
-        .pizza-description {
+        .pizza-description, .offer-description {
             color: #666;
             margin-bottom: 1rem;
             font-size: 0.9rem;
         }
         
-        .pizza-price {
+        .pizza-price, .offer-price {
             font-weight: bold;
             color: var(--primary);
             margin-bottom: 1rem;
             font-size: 1.2rem;
+        }
+        
+        .original-price {
+            text-decoration: line-through;
+            color: #999;
+            font-size: 1rem;
+            margin-right: 0.5rem;
         }
         
         .btn {
@@ -197,7 +211,113 @@
             color: white;
         }
         
-        .customizer-modal {
+        /* Contacto */
+        .contact-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+        
+        .contact-info, .contact-form {
+            background: white;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        .contact-info h3, .contact-form h3 {
+            color: var(--secondary);
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid var(--accent);
+        }
+        
+        .info-item {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 1.5rem;
+        }
+        
+        .info-item i {
+            color: var(--primary);
+            font-size: 1.2rem;
+            margin-right: 1rem;
+            min-width: 20px;
+        }
+        
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+        
+        .form-group input, .form-group textarea {
+            width: 100%;
+            padding: 0.8rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 1rem;
+        }
+        
+        .form-group textarea {
+            min-height: 150px;
+            resize: vertical;
+        }
+        
+        .map-container {
+            margin-top: 2rem;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        .map-container iframe {
+            width: 100%;
+            height: 300px;
+            border: none;
+        }
+        
+        /* Ofertas */
+        .offer-badge {
+            position: absolute;
+            background-color: var(--accent);
+            color: var(--dark);
+            padding: 0.3rem 0.8rem;
+            font-weight: bold;
+            border-radius: 4px;
+            transform: translate(10px, -10px);
+        }
+        
+        /* Menú */
+        .menu-categories {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+        
+        .category-btn {
+            padding: 0.7rem 1.5rem;
+            margin: 0.5rem;
+            background-color: white;
+            border: 1px solid #ddd;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .category-btn.active, .category-btn:hover {
+            background-color: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+        
+        /* Modales */
+        .customizer-modal, .cart-modal {
             display: none;
             position: fixed;
             top: 0;
@@ -312,16 +432,15 @@
         }
         
         .cart-modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            right: 0;
-            width: 100%;
+            justify-content: flex-end;
+        }
+        
+        .cart-content {
+            background-color: white;
+            width: 90%;
             max-width: 400px;
             height: 100%;
-            background-color: white;
-            z-index: 1000;
-            box-shadow: -5px 0 15px rgba(0, 0, 0, 0.1);
+            display: flex;
             flex-direction: column;
         }
         
@@ -460,12 +579,30 @@
             color: white;
         }
         
+        .social-icons {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+        
+        .social-icons a {
+            font-size: 1.5rem;
+        }
+        
         .copyright {
             text-align: center;
             padding-top: 2rem;
             margin-top: 2rem;
             border-top: 1px solid #444;
             color: #999;
+        }
+        
+        .section {
+            display: none;
+        }
+        
+        .section.active {
+            display: block;
         }
         
         @media (max-width: 768px) {
@@ -476,10 +613,20 @@
             
             nav ul {
                 margin-top: 1rem;
+                flex-wrap: wrap;
+                justify-content: center;
             }
             
-            .pizza-grid {
+            nav li {
+                margin: 0.5rem;
+            }
+            
+            .pizza-grid, .offers-grid {
                 grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            }
+            
+            .contact-container {
+                grid-template-columns: 1fr;
             }
         }
     </style>
@@ -492,12 +639,12 @@
             </div>
             <nav>
                 <ul>
-                    <li><a href="#">Inicio</a></li>
-                    <li><a href="#">Menú</a></li>
-                    <li><a href="#">Ofertas</a></li>
-                    <li><a href="#">Contacto</a></li>
+                    <li><a href="#" class="nav-link active" data-section="home">Inicio</a></li>
+                    <li><a href="#" class="nav-link" data-section="menu">Menú</a></li>
+                    <li><a href="#" class="nav-link" data-section="offers">Ofertas</a></li>
+                    <li><a href="#" class="nav-link" data-section="contact">Contacto</a></li>
                     <li class="cart-icon" id="cartButton">
-                        🛒 <div class="cart-count">0</div>
+                        <i class="fas fa-shopping-cart"></i> <div class="cart-count">0</div>
                     </li>
                 </ul>
             </nav>
@@ -505,10 +652,148 @@
     </header>
 
     <div class="container">
-        <h2 class="section-title">Nuestras Pizzas</h2>
-        
-        <div class="pizza-grid" id="pizzaGrid">
-            <!-- Las pizzas se cargarán dinámicamente con JavaScript -->
+        <!-- Sección de Inicio -->
+        <div id="home" class="section active">
+            <h2 class="section-title">Nuestras Pizzas Más Populares</h2>
+            
+            <div class="pizza-grid" id="featuredPizzas">
+                <!-- Pizzas destacadas se cargarán con JavaScript -->
+            </div>
+            
+            <div style="text-align: center; margin-top: 3rem;">
+                <a href="#" class="btn" id="viewFullMenu">Ver Menú Completo</a>
+            </div>
+            
+            <div style="margin-top: 4rem;">
+                <h2 class="section-title">¿Por qué elegirnos?</h2>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 2rem; margin-top: 2rem;">
+                    <div style="text-align: center; padding: 1.5rem; background: white; border-radius: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
+                        <i class="fas fa-shipping-fast" style="font-size: 3rem; color: var(--primary); margin-bottom: 1rem;"></i>
+                        <h3>Entrega Rápida</h3>
+                        <p>Entregamos en 30 minutos o menos, o te regalamos tu próxima pizza.</p>
+                    </div>
+                    <div style="text-align: center; padding: 1.5rem; background: white; border-radius: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
+                        <i class="fas fa-star" style="font-size: 3rem; color: var(--primary); margin-bottom: 1rem;"></i>
+                        <h3>Ingredientes Frescos</h3>
+                        <p>Utilizamos sólo ingredientes frescos y de la más alta calidad.</p>
+                    </div>
+                    <div style="text-align: center; padding: 1.5rem; background: white; border-radius: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
+                        <i class="fas fa-tag" style="font-size: 3rem; color: var(--primary); margin-bottom: 1rem;"></i>
+                        <h3>Ofertas Especiales</h3>
+                        <p>Tenemos promociones y descuentos especiales todos los días.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sección de Menú -->
+        <div id="menu" class="section">
+            <h2 class="section-title">Nuestro Menú</h2>
+            
+            <div class="menu-categories">
+                <button class="category-btn active" data-category="all">Todas</button>
+                <button class="category-btn" data-category="classic">Clásicas</button>
+                <button class="category-btn" data-category="special">Especiales</button>
+                <button class="category-btn" data-category="vegetarian">Vegetarianas</button>
+                <button class="category-btn" data-category="premium">Premium</button>
+            </div>
+            
+            <div class="pizza-grid" id="menuPizzas">
+                <!-- Todas las pizzas se cargarán con JavaScript -->
+            </div>
+        </div>
+
+        <!-- Sección de Ofertas -->
+        <div id="offers" class="section">
+            <h2 class="section-title">Ofertas Especiales</h2>
+            
+            <div class="offers-grid" id="offersGrid">
+                <!-- Las ofertas se cargarán con JavaScript -->
+            </div>
+        </div>
+
+        <!-- Sección de Contacto -->
+        <div id="contact" class="section">
+            <h2 class="section-title">Contáctanos</h2>
+            
+            <div class="contact-container">
+                <div class="contact-info">
+                    <h3>Información de Contacto</h3>
+                    
+                    <div class="info-item">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <div>
+                            <h4>Dirección</h4>
+                            <p>Avenida Principal #123, Ciudad</p>
+                        </div>
+                    </div>
+                    
+                    <div class="info-item">
+                        <i class="fas fa-phone"></i>
+                        <div>
+                            <h4>Teléfono</h4>
+                            <p>(123) 456-7890</p>
+                        </div>
+                    </div>
+                    
+                    <div class="info-item">
+                        <i class="fas fa-envelope"></i>
+                        <div>
+                            <h4>Email</h4>
+                            <p>info@pizzashop.com</p>
+                        </div>
+                    </div>
+                    
+                    <div class="info-item">
+                        <i class="fas fa-clock"></i>
+                        <div>
+                            <h4>Horario de Atención</h4>
+                            <p>Lunes a Jueves: 11:00 - 22:00</p>
+                            <p>Viernes a Sábado: 11:00 - 00:00</p>
+                            <p>Domingo: 12:00 - 20:00</p>
+                        </div>
+                    </div>
+                    
+                    <div class="social-icons">
+                        <a href="#"><i class="fab fa-facebook"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-whatsapp"></i></a>
+                    </div>
+                </div>
+                
+                <div class="contact-form">
+                    <h3>Envíanos un Mensaje</h3>
+                    
+                    <form id="contactForm">
+                        <div class="form-group">
+                            <label for="name">Nombre</label>
+                            <input type="text" id="name" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="email">Email</label>
+                            <input type="email" id="email" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="subject">Asunto</label>
+                            <input type="text" id="subject" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="message">Mensaje</label>
+                            <textarea id="message" required></textarea>
+                        </div>
+                        
+                        <button type="submit" class="btn">Enviar Mensaje</button>
+                    </form>
+                </div>
+            </div>
+            
+            <div class="map-container">
+                <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d39642.68183612759!2d-0.4613151815239966!3d39.40755920458338!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0xd604f4cf0bfb5e7%3A0x6ac6c40d2745a4fa!2sValencia%2C%20Espa%C3%B1a!5e0!3m2!1ses!2sus!4v1654562364663!5m2!1ses!2sus" allowfullscreen="" loading="lazy"></iframe>
+            </div>
         </div>
     </div>
 
@@ -568,19 +853,21 @@
 
     <!-- Modal del carrito -->
     <div class="cart-modal" id="cartModal">
-        <div class="cart-header">
-            <h3>Tu Carrito</h3>
-            <button class="close-modal" id="closeCart">×</button>
-        </div>
-        <div class="cart-body" id="cartItems">
-            <!-- Los elementos del carrito se cargarán dinámicamente -->
-        </div>
-        <div class="cart-footer">
-            <div class="cart-total">
-                <span>Total:</span>
-                <span id="cartTotalPrice">$0.00</span>
+        <div class="cart-content">
+            <div class="cart-header">
+                <h3>Tu Carrito</h3>
+                <button class="close-modal" id="closeCart">×</button>
             </div>
-            <button class="checkout-btn" id="checkoutBtn">Proceder al Pago</button>
+            <div class="cart-body" id="cartItems">
+                <!-- Los elementos del carrito se cargarán dinámicamente -->
+            </div>
+            <div class="cart-footer">
+                <div class="cart-total">
+                    <span>Total:</span>
+                    <span id="cartTotalPrice">$0.00</span>
+                </div>
+                <button class="checkout-btn" id="checkoutBtn">Proceder al Pago</button>
+            </div>
         </div>
     </div>
 
@@ -592,9 +879,10 @@
             </div>
             <div class="footer-section">
                 <h3>Enlaces Rápidos</h3>
-                <a href="#">Menú</a>
-                <a href="#">Ofertas</a>
-                <a href="#">Sobre Nosotros</a>
+                <a href="#" class="nav-link" data-section="home">Inicio</a>
+                <a href="#" class="nav-link" data-section="menu">Menú</a>
+                <a href="#" class="nav-link" data-section="offers">Ofertas</a>
+                <a href="#" class="nav-link" data-section="contact">Contacto</a>
             </div>
             <div class="footer-section">
                 <h3>Contacto</h3>
@@ -622,42 +910,103 @@
                 name: "Margarita",
                 description: "Salsa de tomate, mozzarella y albahaca fresca",
                 price: 8.99,
-                image: "https://via.placeholder.com/300x180.png?text=Margarita"
+                image: "https://images.unsplash.com/photo-1513104890138-7c749659a591?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=870&q=80",
+                category: "classic",
+                featured: true
             },
             {
                 id: 2,
                 name: "Pepperoni",
                 description: "Salsa de tomate, mozzarella y pepperoni",
                 price: 9.99,
-                image: "https://via.placeholder.com/300x180.png?text=Pepperoni"
+                image: "https://images.unsplash.com/photo-1627620043062-2e1282e007b0?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=870&q=80",
+                category: "classic",
+                featured: true
             },
             {
                 id: 3,
                 name: "Hawaiana",
                 description: "Salsa de tomate, mozzarella, jamón y piña",
                 price: 10.99,
-                image: "https://via.placeholder.com/300x180.png?text=Hawaiana"
+                image: "https://images.unsplash.com/photo-1604382355076-af4b0eb60143?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=774&q=80",
+                category: "classic",
+                featured: false
             },
             {
                 id: 4,
                 name: "Cuatro Quesos",
                 description: "Salsa de tomate, mozzarella, gorgonzola, parmesano y fontina",
                 price: 11.99,
-                image: "https://via.placeholder.com/300x180.png?text=Cuatro+Quesos"
+                image: "https://images.unsplash.com/photo-1595708684082-a173bb3a06c5?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=776&q=80",
+                category: "special",
+                featured: true
             },
             {
                 id: 5,
                 name: "Vegetariana",
                 description: "Salsa de tomate, mozzarella, pimientos, cebolla, champiñones y aceitunas",
                 price: 10.99,
-                image: "https://via.placeholder.com/300x180.png?text=Vegetariana"
+                image: "https://images.unsplash.com/photo-1604068549290-dea0e4a305ca?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=774&q=80",
+                category: "vegetarian",
+                featured: false
             },
             {
                 id: 6,
                 name: "Barbacoa",
                 description: "Salsa barbacoa, mozzarella, pollo, cebolla y bacon",
                 price: 12.99,
-                image: "https://via.placeholder.com/300x180.png?text=Barbacoa"
+                image: "https://images.unsplash.com/photo-1595854341625-f33ee10dbf94?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=870&q=80",
+                category: "special",
+                featured: false
+            },
+            {
+                id: 7,
+                name: "Trufa",
+                description: "Salsa de trufa, mozzarella, champiñones y jamón ibérico",
+                price: 15.99,
+                image: "https://images.unsplash.com/photo-1574071318508-1cdbab80d002?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=869&q=80",
+                category: "premium",
+                featured: true
+            },
+            {
+                id: 8,
+                name: "Mediterránea",
+                description: "Salsa de tomate, mozzarella, aceitunas, tomate seco y albahaca",
+                price: 11.99,
+                image: "https://images.unsplash.com/photo-1574071318508-1cdbab80d002?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=869&q=80",
+                category: "vegetarian",
+                featured: false
+            }
+        ];
+
+        // Datos de ofertas
+        const offersData = [
+            {
+                id: 1,
+                name: "2x1 en Martes",
+                description: "Todos los martes llévate 2 pizzas al precio de 1 en pedidos online",
+                price: 0,
+                originalPrice: 0,
+                image: "https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=781&q=80",
+                discount: "2x1"
+            },
+            {
+                id: 2,
+                name: "Combo Familiar",
+                description: "2 pizzas grandes + bebida + postre por un precio especial",
+                price: 24.99,
+                originalPrice: 32.99,
+                image: "https://images.unsplash.com/photo-1565299585323-38174c739b6c?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=772&q=80",
+                discount: "25%"
+            },
+            {
+                id: 3,
+                name: "Pizza + Bebida",
+                description: "Cualquier pizza mediana + bebida de 1.5L a precio especial",
+                price: 12.99,
+                originalPrice: 15.99,
+                image: "https://images.unsplash.com/photo-1593560708920-61dd98c46a4e?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=870&q=80",
+                discount: "20%"
             }
         ];
 
@@ -692,6 +1041,7 @@
 
         // Estado de la aplicación
         let currentPizza = null;
+        let currentSection = 'home';
         let customizationState = {
             size: 'medium',
             crust: 'original',
@@ -701,7 +1051,9 @@
         let cart = [];
 
         // Elementos del DOM
-        const pizzaGrid = document.getElementById('pizzaGrid');
+        const pizzaGrid = document.getElementById('featuredPizzas');
+        const menuPizzas = document.getElementById('menuPizzas');
+        const offersGrid = document.getElementById('offersGrid');
         const customizerModal = document.getElementById('customizerModal');
         const cartModal = document.getElementById('cartModal');
         const cartButton = document.getElementById('cartButton');
@@ -712,33 +1064,94 @@
         const checkoutBtn = document.getElementById('checkoutBtn');
         const addToCartBtn = document.getElementById('addToCartBtn');
         const cartCount = document.querySelector('.cart-count');
+        const navLinks = document.querySelectorAll('.nav-link');
+        const sections = document.querySelectorAll('.section');
+        const categoryButtons = document.querySelectorAll('.category-btn');
+        const viewFullMenuBtn = document.getElementById('viewFullMenu');
+        const contactForm = document.getElementById('contactForm');
 
-        // Cargar pizzas en el grid
-        function loadPizzas() {
+        // Cargar pizzas destacadas en el inicio
+        function loadFeaturedPizzas() {
             pizzaGrid.innerHTML = '';
             
-            pizzaData.forEach(pizza => {
-                const pizzaCard = document.createElement('div');
-                pizzaCard.className = 'pizza-card';
-                pizzaCard.innerHTML = `
-                    <div class="pizza-image" style="background-image: url('${pizza.image}')"></div>
-                    <div class="pizza-info">
-                        <h3 class="pizza-title">${pizza.name}</h3>
-                        <p class="pizza-description">${pizza.description}</p>
-                        <p class="pizza-price">$${pizza.price.toFixed(2)}</p>
-                        <button class="btn" data-id="${pizza.id}">Personalizar</button>
+            const featuredPizzas = pizzaData.filter(pizza => pizza.featured);
+            
+            featuredPizzas.forEach(pizza => {
+                const pizzaCard = createPizzaCard(pizza);
+                pizzaGrid.appendChild(pizzaCard);
+            });
+        }
+
+        // Cargar todas las pizzas en el menú
+        function loadAllPizzas(category = 'all') {
+            menuPizzas.innerHTML = '';
+            
+            let filteredPizzas = pizzaData;
+            
+            if (category !== 'all') {
+                filteredPizzas = pizzaData.filter(pizza => pizza.category === category);
+            }
+            
+            filteredPizzas.forEach(pizza => {
+                const pizzaCard = createPizzaCard(pizza);
+                menuPizzas.appendChild(pizzaCard);
+            });
+        }
+
+        // Crear tarjeta de pizza
+        function createPizzaCard(pizza) {
+            const pizzaCard = document.createElement('div');
+            pizzaCard.className = 'pizza-card';
+            pizzaCard.innerHTML = `
+                <div class="pizza-image" style="background-image: url('${pizza.image}')"></div>
+                <div class="pizza-info">
+                    <h3 class="pizza-title">${pizza.name}</h3>
+                    <p class="pizza-description">${pizza.description}</p>
+                    <p class="pizza-price">$${pizza.price.toFixed(2)}</p>
+                    <button class="btn" data-id="${pizza.id}">Personalizar</button>
+                </div>
+            `;
+            
+            // Añadir event listener al botón
+            const button = pizzaCard.querySelector('.btn');
+            button.addEventListener('click', (e) => {
+                const pizzaId = parseInt(e.target.getAttribute('data-id'));
+                openCustomizer(pizzaId);
+            });
+            
+            return pizzaCard;
+        }
+
+        // Cargar ofertas
+        function loadOffers() {
+            offersGrid.innerHTML = '';
+            
+            offersData.forEach(offer => {
+                const offerCard = document.createElement('div');
+                offerCard.className = 'offer-card';
+                
+                let priceHtml = '';
+                if (offer.price > 0) {
+                    priceHtml = `
+                        <p class="offer-price">
+                            ${offer.originalPrice > 0 ? `<span class="original-price">$${offer.originalPrice.toFixed(2)}</span>` : ''}
+                            $${offer.price.toFixed(2)}
+                        </p>
+                    `;
+                }
+                
+                offerCard.innerHTML = `
+                    ${offer.discount ? `<div class="offer-badge">${offer.discount}</div>` : ''}
+                    <div class="offer-image" style="background-image: url('${offer.image}')"></div>
+                    <div class="offer-info">
+                        <h3 class="offer-title">${offer.name}</h3>
+                        <p class="offer-description">${offer.description}</p>
+                        ${priceHtml}
+                        <button class="btn" data-offer-id="${offer.id}">Ver Detalles</button>
                     </div>
                 `;
                 
-                pizzaGrid.appendChild(pizzaCard);
-            });
-            
-            // Añadir event listeners a los botones
-            document.querySelectorAll('.pizza-card .btn').forEach(btn => {
-                btn.addEventListener('click', (e) => {
-                    const pizzaId = parseInt(e.target.getAttribute('data-id'));
-                    openCustomizer(pizzaId);
-                });
+                offersGrid.appendChild(offerCard);
             });
         }
 
@@ -1098,9 +1511,74 @@
             cartModal.style.display = 'none';
         }
 
+        // Cambiar sección
+        function changeSection(sectionId) {
+            // Ocultar todas las secciones
+            sections.forEach(section => {
+                section.classList.remove('active');
+            });
+            
+            // Mostrar la sección seleccionada
+            document.getElementById(sectionId).classList.add('active');
+            
+            // Actualizar enlaces de navegación
+            navLinks.forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('data-section') === sectionId) {
+                    link.classList.add('active');
+                }
+            });
+            
+            // Actualizar sección actual
+            currentSection = sectionId;
+            
+            // Cargar contenido específico de la sección si es necesario
+            if (sectionId === 'menu') {
+                loadAllPizzas();
+            } else if (sectionId === 'offers') {
+                loadOffers();
+            }
+        }
+
         // Event Listeners
         document.addEventListener('DOMContentLoaded', () => {
-            loadPizzas();
+            loadFeaturedPizzas();
+            loadOffers();
+            
+            // Navegación
+            navLinks.forEach(link => {
+                link.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const sectionId = link.getAttribute('data-section');
+                    changeSection(sectionId);
+                });
+            });
+            
+            // Botón ver menú completo
+            viewFullMenuBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                changeSection('menu');
+            });
+            
+            // Categorías del menú
+            categoryButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    // Marcar botón activo
+                    categoryButtons.forEach(btn => btn.classList.remove('active'));
+                    button.classList.add('active');
+                    
+                    // Filtrar pizzas
+                    const category = button.getAttribute('data-category');
+                    loadAllPizzas(category);
+                });
+            });
+            
+            // Formulario de contacto
+            contactForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                alert('¡Gracias por tu mensaje! Te contactaremos pronto.');
+                contactForm.reset();
+            });
             
             // Abrir carrito
             cartButton.addEventListener('click', () => {
